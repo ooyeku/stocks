@@ -19,17 +19,6 @@ using DataFrames
 using Statistics
 
 
-const MICROSOFT = "MSFT"
-const APPLE = "AAPL"
-const GOOGLE = "GOOGL"
-const TESLA = "TSLA"
-const ORACLE = "ORCL"
-const IBM = "IBM"
-const META = "META"
-const SAP = "SAP"
-const WORKDAY = "WDAY"
-const SALESFORCE = "CRM"
-const NETFLIX = "NFLX"
 
 
 export fetch_stock_data, compute_sma, plot_stock_data
