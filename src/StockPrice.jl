@@ -18,6 +18,7 @@ using Plots
 using DataFrames
 using Statistics
 
+
 const MICROSOFT = "MSFT"
 const APPLE = "AAPL"
 const GOOGLE = "GOOGL"
