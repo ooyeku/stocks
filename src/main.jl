@@ -1,8 +1,10 @@
 include("StockPrice.jl")
 include("Ticker.jl")
+include("Headlines.jl")
 
 using .StockPrice
 using .Ticker
+using .Headlines
 using Plots
 
 """
@@ -41,6 +43,7 @@ function analyze_stock(ticker::String, output_file::String; range::String="1mo",
     println("Plot saved to: $output_file")
 end
 
+
 """
     analyze_stock(tickers::Vector{String}; range::String="1mo", interval::String="1d", sma_window::Int=10)
 
@@ -57,6 +60,7 @@ function analyze_stock(tickers::Vector{String}; range::String="1mo", interval::S
     plot = StockPrice.plot_stock_data(data, sma_window)
     display(plot)
 end
+
 
 """
     analyze_stock(tickers::Vector{String}, output_file::String; range::String="1mo", interval::String="1d", sma_window::Int=10)
@@ -77,32 +81,29 @@ function analyze_stock(tickers::Vector{String}, output_file::String; range::Stri
     println("Plot saved to: $output_file")
 end
 
+
+
 function example_usage()
     begin
         println("Example 1: Analyze a single stock and display the plot")
         analyze_stock(Ticker.APPLE, range="6mo", interval="1d", sma_window=30)
     end
-
     begin
         println("\nExample 2: Analyze a single stock and save the plot to a file")
         analyze_stock(Ticker.MICROSOFT, "microsoft_stock_analysis.png", range="6mo", interval="1d", sma_window=30)
     end
-
     begin
         println("\nExample 3: Analyze multiple stocks and display the plot")
         analyze_stock([Ticker.GOOGLE, Ticker.AMAZON], range="6mo", interval="1d", sma_window=30)
     end
-
     begin
         println("\nExample 4: Analyze multiple stocks and save the plot to a file")
         analyze_stock([Ticker.SAP, Ticker.ORACLE, Ticker.SALESFORCE], "enterprise_software_analysis.png", range="6mo", interval="1d", sma_window=30)
     end
-
     begin
         # analyzing by industry
         println("\nExample 5: Analyze multiple stocks by industry")
         analyze_stock(Ticker.TECH, range="6mo", interval="1d", sma_window=30)
     end
-
     println("\nCheck the current directory for saved plot files.")
 end
