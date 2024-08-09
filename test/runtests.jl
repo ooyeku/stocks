@@ -1,3 +1,4 @@
+include("../src/StockPrice.jl")
 using Test
 using YFinance
 using DataFrames

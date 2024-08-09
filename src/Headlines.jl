@@ -104,5 +104,37 @@ function get_titles(symbols::Vector{String})
     return titles
 end
 
+"""
+    get_headlines_dataframe(symbol::String)
+
+Get the headlines for a given symbol.
+
+    Arguments
+        symbol::String - The symbol to get the headlines for.
+
+    Returns
+        headlines::DataFrame - A dataframe of headlines.
+"""
+function get_headlines_dataframe(symbol::String)
+    headlines = get_headlines(symbol)
+    return DataFrame(headlines)
+end
+
+"""
+    get_headlines_dataframe(symbols::Vector{String})
+
+Get the headlines for a given vector of symbols.
+
+    Arguments
+        symbols::Vector{String} - A vector of symbols to get the headlines for.
+
+    Returns
+        headlines::DataFrame - A dataframe of headlines.
+"""
+function get_headlines_dataframe(symbols::Vector{String})
+    headlines = get_headlines(symbols)
+    return DataFrame(headlines)
+end
+
 
 end

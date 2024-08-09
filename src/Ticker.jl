@@ -20,13 +20,18 @@ const GOOGLE = "GOOGL" # Google
 const TESLA = "TSLA" # Tesla
 const ORACLE = "ORCL" # Oracle
 const IBM = "IBM" # IBM
+const NVIDIA = "NVDA" # NVIDIA
+const ADOBE = "ADBE" # Adobe
+const AMD = "AMD" # AMD
+const PAYPAL = "PYPL" # Paypal
+const CISCO = "CSCO" # Cisco
 const META = "META" # Meta
 const SAP = "SAP" # SAP
 const WORKDAY = "WDAY" # Workday
 const SALESFORCE = "CRM" # Salesforce
 const NETFLIX = "NFLX" # Netflix
 const AMAZON = "AMZN" # Amazon
-const TECH = [MICROSOFT, APPLE, GOOGLE, TESLA, ORACLE, IBM, META, SAP, WORKDAY, SALESFORCE, NETFLIX, AMAZON]
+const TECH = [MICROSOFT, APPLE, GOOGLE, TESLA, ORACLE, IBM, NVIDIA, ADOBE, AMD, PAYPAL, CISCO, META, SAP, WORKDAY, SALESFORCE, NETFLIX, AMAZON]
 
 # Consumer
 const TARGET = "TGT" # Target
@@ -50,8 +55,27 @@ const HOSPITALITY = [MARRIOTT, HI, HIW, AIRBNB]
 const CHASE = "CM" # Chase
 const BAC = "BAC" # Bank of America
 const MASTERCARD = "MS" # Mastercard
-const FINANCE = [CHASE, BAC, MASTERCARD]
+const VISA = "V" # Visa
+const AMEX = "AXP" # American Express
+const WELLSFARGO = "WFC" # Wells Fargo
+const FINANCE = [CHASE, BAC, MASTERCARD, VISA, AMEX, WELLSFARGO]
 
-export TECH, CONSUMER, HOSPITALITY, FINANCE
+# Automotive
+const GM = "GM" # General Motors
+const FORD = "F" # Ford
+const AUDI = "AUD" # Audi
+const VOLKSWAGEN = "V" # Volkswagen
+const RIVIAN = "RIV" # Rivian
+const TOYOTA = "TM" # Toyota    
+const HONDA = "HMC" # Honda
+const BMW = "BMW" # BMW
+const VOLVO = "VOLV" # Volvo
+const AUTOMOTIVE = [GM, FORD, AUDI, VOLKSWAGEN, RIVIAN, TOYOTA, HONDA, BMW, VOLVO]
+
+
+
+
+
+export TECH, CONSUMER, HOSPITALITY, FINANCE, AUTOMOTIVE
 
 end # module
