@@ -4,6 +4,7 @@ using YFinance
 using Plots
 using DataFrames
 using Statistics
+using PlotlyJS
 
 export fetch_stock_data, compute_sma, compute_ema, plot_stock_data, plot_candlestick
 
@@ -19,7 +20,7 @@ Fetch stock data for a single ticker.
 
 # Returns
 - `DataFrame`: DataFrame containing stock data for the ticker.
-""" 
+"""
 function fetch_stock_data(ticker::String; range::String="1mo", interval::String="1d")
     data = get_prices(ticker; range=range, interval=interval) |> DataFrame
     data[!, :ticker] .= ticker  
@@ -81,18 +82,16 @@ function compute_ema(prices::Vector{Float64}, window::Int)
         return Float64[]
     end
     if length(prices) < window
-        @warn "Not enough data points to compute EMA with window size $window. Returning empty EMA."
+        @warn "Not enough data points to compute EMA. Required: $window, Provided: $(length(prices))"
         return Float64[]
     end
-
+    
     α = 2 / (window + 1)
     ema = Float64[]
-    push!(ema, prices[1])  # Initialize EMA with the first price
-
+    push!(ema, prices[1]) # Initialize EMA with the first price
     for price in prices[2:end]
         push!(ema, α * price + (1 - α) * ema[end])
     end
-
     return ema
 end
 
@@ -158,18 +157,17 @@ Plot a candlestick chart for the given stock data.
 - `data::DataFrame`: DataFrame containing stock data with columns :timestamp, :open, :high, :low, :close.
 """
 function plot_candlestick(data::DataFrame)
-    candlestick_plot = candlestick(
-        data.timestamp,
-        data.open,
-        data.high,
-        data.low,
-        data.close,
-        title="Candlestick Chart",
-        xlabel="Date",
-        ylabel="Price"
+    trace = PlotlyJS.candlestick(;
+        x=data.timestamp,
+        open=data.open,
+        high=data.high,
+        low=data.low,
+        close=data.close
     )
-    display(candlestick_plot)
-    return candlestick_plot
+    layout = PlotlyJS.Layout(title="Candlestick Chart", xaxis_title="Date", yaxis_title="Price")
+    fig = PlotlyJS.plot(trace, layout)
+    PlotlyJS.display(fig)
+    return fig
 end
 
 end # module

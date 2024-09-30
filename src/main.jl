@@ -7,6 +7,8 @@ using .Ticker
 using .Headlines
 using Plots
 
+using PlotlyJS
+
 """
     analyze_stock(ticker::String; 
                  range::String="1mo", 

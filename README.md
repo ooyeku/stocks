@@ -17,36 +17,49 @@ This will include the Headlines, StockPrice, and Ticker modules.
 
 ## Examples
 
-Analyze a single stock with a 1 month range, 1 day interval, and a 10 day SMA:
+Analyze a single stock with a 6-month range, 1-day interval, and a 30-day SMA:
 ```julia
-julia> tesla = analyze_stock(Ticker.TESLA, range="1mo", interval="1d", sma_window=10)
+julia> analyze_stock(Ticker.APPLE, range="6mo", interval="1d", sma_window=30)
 ```
 
-Analyze a group of stocks (predefined sectors):
+Analyze a single stock with SMA, EMA, and save the plot to a file:
 ```julia
-julia> tech_stocks = analyze_stocks(Ticker.TECH, range="1mo", interval="1d", sma_window=10)
+julia> analyze_stock(Ticker.MICROSOFT, "microsoft_stock_analysis.png", range="6mo", interval="1d", sma_window=30, ema_window=50)
 ```
 
-Save the plots to a file:
+Analyze multiple stocks with SMA:
 ```julia
-julia> tesla = analyze_stock(Ticker.TESLA, "tesla.png", range="1mo", interval="1d", sma_window=10)
+julia> analyze_stocks([Ticker.GOOGLE, Ticker.AMAZON], range="6mo", interval="1d", sma_window=30)
 ```
 
+Analyze multiple stocks by industry with EMA:
+```julia
+julia> analyze_stocks(Ticker.TECH, range="6mo", interval="1d", sma_window=30, ema_window=50)
+```
+
+Analyze a single stock with a candlestick plot:
+```julia
+julia> analyze_stock(Ticker.TESLA, plot_candlestick=true)
+```
+
+Analyze multiple stocks with candlestick plots and save to file:
+```julia
+julia> analyze_stocks([Ticker.APPLE, Ticker.MICROSOFT], "tech_stocks_analysis.png", plot_candlestick=true)
+```
 
 Fetch news for a given ticker:
 ```julia
 julia> news = get_headlines(Ticker.TESLA)
 ```
 
-Alternatively, fetch news for a group of tickers:
+Fetch news for a group of tickers:
 ```julia
 julia> news = get_headlines(Ticker.TECH)
 ```
 
 The `get_headlines` function returns a vector of NewsItem objects, which contain the title, link, and date of the news item.
 
-The `get_headlines_dataframe` function returns a dataframe of the headlines for convenience.
+The `get_headlines_dataframe` function returns a dataframe of the headlines for convenience:
 ```julia
 julia> news = get_headlines_dataframe(Ticker.TECH)
 ```
-
