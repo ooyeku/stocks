@@ -108,32 +108,6 @@ Plot stock data for a single ticker.
 - `Plot`: Plot of the stock data.
 """
 function plot_stock_data(data::DataFrame, sma_window::Int)
-    dates = data[!, :timestamp]
-    close_prices = data[!, :close]
-    sma = compute_sma(close_prices, sma_window)
-
-    ticker = data[1, :ticker]
-    title = "$(ticker) Stock Analysis"
-
-    plot(dates, close_prices, label="Close", legend=:topleft, title=title, size=(800, 600))
-    plot!(dates[sma_window:end], sma, label="$(sma_window)d SMA")
-    
-    return current()
-end
-
-"""
-    plot_stock_data(data::DataFrame, sma_window::Int)
-
-Plot stock data for multiple tickers.
-
-# Arguments
-- `data::DataFrame`: DataFrame containing stock data for all tickers.
-- `sma_window::Int`: Window size for SMA calculation.
-
-# Returns
-- `Plot`: Plot of the stock data.
-"""
-function plot_stock_data(data::DataFrame, sma_window::Int)
     plots = []
     for ticker in unique(data[!, :ticker])
         ticker_data = data[data[!, :ticker] .== ticker, :]
@@ -141,11 +115,11 @@ function plot_stock_data(data::DataFrame, sma_window::Int)
         close_prices = ticker_data[!, :close]
         sma = compute_sma(close_prices, sma_window)
         
-        p = plot(dates, close_prices, label="Close", legend=:topleft, title="$ticker Stock Analysis", size=(800, 600))
-        plot!(p, dates[sma_window:end], sma, label="$(sma_window)d SMA")
+        p = Plots.plot(dates, close_prices, label="Close", legend=:topleft, title="$ticker Stock Analysis", size=(800, 600))
+        Plots.plot!(p, dates[sma_window:end], sma, label="$(sma_window)d SMA")
         push!(plots, p)
     end
-    return plot(plots..., layout=(length(plots), 1), size=(800, 600 * length(plots)))
+    return Plots.plot(plots..., layout=(length(plots), 1), size=(800, 600 * length(plots)))
 end
 
 """

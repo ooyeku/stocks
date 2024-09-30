@@ -6,6 +6,8 @@ using Dates
 using DataFrames
 using .Ticker
 
+export get_headlines, get_titles, get_headlines_dataframe, compute_sentiment
+
 mutable struct NewsItem
     title::String
     publisher::String
