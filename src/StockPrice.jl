@@ -1,16 +1,3 @@
-# Copyright 2024 olayeku
-# 
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-# 
-#     https://www.apache.org/licenses/LICENSE-2.0
-# 
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 module StockPrice
 
 using YFinance
@@ -18,10 +5,7 @@ using Plots
 using DataFrames
 using Statistics
 
-
-
-
-export fetch_stock_data, compute_sma, plot_stock_data
+export fetch_stock_data, compute_sma, compute_ema, plot_stock_data, plot_candlestick
 
 """
     fetch_stock_data(ticker::String; range::String="1mo", interval::String="1d")
@@ -76,6 +60,43 @@ function compute_sma(prices::Vector{<:Real}, window_size::Int)
 end
 
 """
+    compute_ema(prices::Vector{Float64}, window::Int) -> Vector{Float64}
+
+Compute the Exponential Moving Average (EMA) for a given window size.
+
+# Arguments
+- `prices::Vector{Float64}`: Vector of stock prices.
+- `window::Int`: Number of periods for EMA calculation.
+
+# Returns
+- `Vector{Float64}`: Vector of EMA values.
+"""
+function compute_ema(prices::Vector{Float64}, window::Int)
+    if isempty(prices)
+        @warn "compute_ema called with an empty prices vector."
+        return Float64[]
+    end
+    if window <= 0
+        @error "Window size for EMA must be greater than 0."
+        return Float64[]
+    end
+    if length(prices) < window
+        @warn "Not enough data points to compute EMA with window size $window. Returning empty EMA."
+        return Float64[]
+    end
+
+    α = 2 / (window + 1)
+    ema = Float64[]
+    push!(ema, prices[1])  # Initialize EMA with the first price
+
+    for price in prices[2:end]
+        push!(ema, α * price + (1 - α) * ema[end])
+    end
+
+    return ema
+end
+
+"""
     plot_stock_data(data::DataFrame, sma_window::Int)
 
 Plot stock data for a single ticker.
@@ -126,6 +147,29 @@ function plot_stock_data(data::DataFrame, sma_window::Int)
         push!(plots, p)
     end
     return plot(plots..., layout=(length(plots), 1), size=(800, 600 * length(plots)))
+end
+
+"""
+    plot_candlestick(data::DataFrame)
+
+Plot a candlestick chart for the given stock data.
+
+# Arguments
+- `data::DataFrame`: DataFrame containing stock data with columns :timestamp, :open, :high, :low, :close.
+"""
+function plot_candlestick(data::DataFrame)
+    candlestick_plot = candlestick(
+        data.timestamp,
+        data.open,
+        data.high,
+        data.low,
+        data.close,
+        title="Candlestick Chart",
+        xlabel="Date",
+        ylabel="Price"
+    )
+    display(candlestick_plot)
+    return candlestick_plot
 end
 
 end # module
