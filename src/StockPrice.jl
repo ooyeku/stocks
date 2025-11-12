@@ -23,7 +23,8 @@ Fetch stock data for a single ticker.
 """
 function fetch_stock_data(ticker::String; range::String="1mo", interval::String="1d")
     data = get_prices(ticker; range=range, interval=interval) |> DataFrame
-    data[!, :ticker] .= ticker  
+    # Add ticker column safely even for empty dataframes
+    data[!, :ticker] = fill(ticker, nrow(data))
     return data
 end
 
@@ -45,23 +46,37 @@ function fetch_stock_data(tickers::Vector{String}; range::String="1mo", interval
 end
 
 """
-    compute_sma(prices::Vector{<:Real}, window_size::Int)
+    compute_sma(prices::AbstractVector{<:Real}, window_size::Int)
 
 Compute simple moving average for a given price vector.
 
 # Arguments
-- `prices::Vector{<:Real}`: Vector of prices to compute SMA for.
-- `window_size::Int`: Window size for SMA calculation.
+- `prices::AbstractVector{<:Real}`: Vector of prices to compute SMA for.
+- `window_size::Int`: Window size for SMA calculation (> 0).
 
 # Returns
-- `Vector{<:Real}`: Vector of SMA values.
+- `Vector{<:Real}`: Vector of SMA values. If all averages are whole numbers and
+  `prices` are integers, returns a Vector{Int}; otherwise returns Vector{Float64}.
 """
-function compute_sma(prices::Vector{<:Real}, window_size::Int)
-    return [mean(prices[i:i+window_size-1]) for i in 1:(length(prices)-window_size+1)]
+function compute_sma(prices::AbstractVector{<:Real}, window_size::Int)
+    if window_size <= 0
+        @warn "SMA window_size must be > 0. Got $window_size. Returning empty result."
+        return Float64[]
+    end
+    n = length(prices)
+    if n < window_size
+        return Float64[]
+    end
+    # Compute as Float64 by default for numerical stability
+    avgs = [mean(@view prices[i:i+window_size-1]) for i in 1:(n-window_size+1)]
+    if eltype(prices) <: Integer && all(x -> x == round(x), avgs)
+        return round.(Int, avgs)
+    end
+    return avgs
 end
 
 """
-    compute_ema(prices::Vector{Float64}, window::Int) -> Vector{Float64}
+    compute_ema(prices::AbstractVector{<:Real}, window::Int) -> Vector{Float64}
 
 Compute the Exponential Moving Average (EMA) for a given window size.
 
@@ -72,7 +87,7 @@ Compute the Exponential Moving Average (EMA) for a given window size.
 # Returns
 - `Vector{Float64}`: Vector of EMA values.
 """
-function compute_ema(prices::Vector{Float64}, window::Int)
+function compute_ema(prices::AbstractVector{<:Real}, window::Int)
     if isempty(prices)
         @warn "compute_ema called with an empty prices vector."
         return Float64[]
@@ -88,8 +103,11 @@ function compute_ema(prices::Vector{Float64}, window::Int)
     
     α = 2 / (window + 1)
     ema = Float64[]
-    push!(ema, prices[1]) # Initialize EMA with the first price
-    for price in prices[2:end]
+    # ensure Float64 numeric values
+    first_price = Float64(prices[1])
+    push!(ema, first_price) # Initialize EMA with the first price
+    @inbounds for i in 2:length(prices)
+        price = Float64(prices[i])
         push!(ema, α * price + (1 - α) * ema[end])
     end
     return ema
@@ -113,10 +131,14 @@ function plot_stock_data(data::DataFrame, sma_window::Int)
         ticker_data = data[data[!, :ticker] .== ticker, :]
         dates = ticker_data[!, :timestamp]
         close_prices = ticker_data[!, :close]
-        sma = compute_sma(close_prices, sma_window)
-        
         p = Plots.plot(dates, close_prices, label="Close", legend=:topleft, title="$ticker Stock Analysis", size=(800, 600))
-        Plots.plot!(p, dates[sma_window:end], sma, label="$(sma_window)d SMA")
+        # Only plot SMA when there are enough points
+        if length(close_prices) >= sma_window
+            sma = compute_sma(close_prices, sma_window)
+            Plots.plot!(p, dates[sma_window:end], sma, label="$(sma_window)d SMA")
+        else
+            @warn "Not enough data points to plot $(sma_window)d SMA for ticker '$ticker' (have $(length(close_prices)))."
+        end
         push!(plots, p)
     end
     return Plots.plot(plots..., layout=(length(plots), 1), size=(800, 600 * length(plots)))

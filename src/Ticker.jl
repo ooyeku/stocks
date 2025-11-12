@@ -4,7 +4,7 @@ module Ticker
 # Tech
 const MICROSOFT = "MSFT" # Microsoft
 const APPLE = "AAPL" # Apple
-const GOOGLE = "GOOGL" # Google
+const GOOGLE = "GOOGL" # Google (Alphabet Class A)
 const TESLA = "TSLA" # Tesla
 const ORACLE = "ORCL" # Oracle
 const IBM = "IBM" # IBM
@@ -34,20 +34,21 @@ const TGT = "TGT" # Target
 const HD = "HD" # Home Depot
 const LOWE = "LOW" # Lowe's
 const DISNEY = "DIS" # Disney
-const NETFLIX = "NFLX" # Netflix
+# NETFLIX already defined above in Tech; reuse the same constant
 const CONSUMER = [WMT, PG, COKE, PEP, COST, NKE, MCD, SBUX, TGT, HD, LOWE, DISNEY, NETFLIX]
 
 # Hospitality
-const MARRIOTT = "MARA" # Marriott
-const HILTON = "HI" # Hilton
-const HILTON_WORLDWIDE = "HIW" # Hilton Worldwide
-const AIRBNB = "AIR" # Airbnb   
+const MARRIOTT = "MAR" # Marriott International
+const HILTON = "HLT" # Hilton Worldwide Holdings
+# HILTON_WORLDWIDE ticker duplicates HILTON concept; keep only one
+const HILTON_WORLDWIDE = HILTON
+const AIRBNB = "ABNB" # Airbnb   
 const HOSPITALITY = [MARRIOTT, HILTON, HILTON_WORLDWIDE, AIRBNB]
 
 # Finance
-const CHASE = "CM" # Chase
+const CHASE = "JPM" # JPMorgan Chase
 const BAC = "BAC" # Bank of America
-const MASTERCARD = "MS" # Mastercard
+const MASTERCARD = "MA" # Mastercard
 const VISA = "V" # Visa
 const AMEX = "AXP" # American Express
 const WELLSFARGO = "WFC" # Wells Fargo
@@ -65,14 +66,14 @@ const FINANCE = [CHASE, BAC, MASTERCARD, VISA, AMEX, WELLSFARGO, CITI, PYPL, BLK
 # Automotive
 const GM = "GM" # General Motors
 const FORD = "F" # Ford
-const AUDI = "AUD" # Audi
-const VOLKSWAGEN = "V" # Volkswagen
-const RIVIAN = "RIV" # Rivian
+const AUDI = "NSU" # Audi (historical, not commonly traded standalone)
+const VOLKSWAGEN = "VWAGY" # Volkswagen ADR
+const RIVIAN = "RIVN" # Rivian
 const TOYOTA = "TM" # Toyota    
 const HONDA = "HMC" # Honda
 const BMW = "BMW" # BMW
-const VOLVO = "VOLV" # Volvo
-const MERCEDES = "MBG" # Mercedes
+const VOLVO = "VLVLY" # Volvo ADR
+const MERCEDES = "MBGAF" # Mercedes-Benz Group AG
 const AUTOMOTIVE = [GM, FORD, AUDI, VOLKSWAGEN, RIVIAN, TOYOTA, HONDA, BMW, VOLVO, MERCEDES]
 
 # Energy

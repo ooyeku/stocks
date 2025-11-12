@@ -9,6 +9,23 @@ using Plots
 
 using PlotlyJS
 
+# Internal helper to save either Plots.jl or PlotlyJS.jl figures
+_save_any(fig, path::String) = try
+    # Attempt PlotlyJS saving first if it's a Plotly figure
+    if fig isa PlotlyJS.SyncPlot || fig isa PlotlyJS.Plot
+        try
+            PlotlyJS.savefig(fig, path)
+        catch e
+            @warn "Failed to save PlotlyJS figure to $path: $e. Falling back to display only."
+            PlotlyJS.display(fig)
+        end
+    else
+        savefig(fig, path) # Plots.savefig
+    end
+catch e
+    @warn "Failed to save figure to $path: $e"
+end
+
 """
     analyze_stock(ticker::String; 
                  range::String="1mo", 
@@ -62,7 +79,7 @@ function analyze_stock(ticker::String;
         p_candle = StockPrice.plot_candlestick(data)
         if !isnothing(output_file)
             candlestick_file = replace(output_file, r"\.png$" => "_candlestick.png")
-            savefig(p_candle, candlestick_file)
+            _save_any(p_candle, candlestick_file)
             println("Candlestick plot saved to: $candlestick_file")
         else
             display(p_candle)
@@ -82,7 +99,7 @@ function analyze_stock(ticker::String;
     end
     
     if !isnothing(output_file)
-        savefig(plot_data, output_file)
+        _save_any(plot_data, output_file)
         println("Plot saved to: $output_file")
     else
         display(plot_data)
@@ -136,7 +153,7 @@ function analyze_stock(ticker::String, output_file::String;
     if plot_candlestick
         p_candle = StockPrice.plot_candlestick(data)
         candlestick_file = replace(output_file, r"\.png$" => "_candlestick.png")
-        savefig(p_candle, candlestick_file)
+        _save_any(p_candle, candlestick_file)
         println("Candlestick plot saved to: $candlestick_file")
     end
     
@@ -152,7 +169,7 @@ function analyze_stock(ticker::String, output_file::String;
         end
     end
     
-    savefig(plot_data, output_file)
+    _save_any(plot_data, output_file)
     println("Plot saved to: $output_file")
 end
 
@@ -215,7 +232,7 @@ function analyze_stocks(tickers::Vector{String};
             p_candle = StockPrice.plot_candlestick(ticker_data)
             if !isnothing(output_file)
                 candlestick_file = replace(output_file, r"\.png$" => "_$(ticker)_candlestick.png")
-                savefig(p_candle, candlestick_file)
+                _save_any(p_candle, candlestick_file)
                 println("Candlestick plot for $ticker saved to: $candlestick_file")
             else
                 display(p_candle)
@@ -239,7 +256,7 @@ function analyze_stocks(tickers::Vector{String};
     end
     
     if !isnothing(output_file)
-        savefig(plot_data, output_file)
+        _save_any(plot_data, output_file)
         println("Plot saved to: $output_file")
     else
         display(plot_data)
@@ -305,7 +322,7 @@ function analyze_stocks(tickers::Vector{String}, output_file::String;
             end
             p_candle = StockPrice.plot_candlestick(ticker_data)
             candlestick_file = replace(output_file, r"\.png$" => "_$(ticker)_candlestick.png")
-            savefig(p_candle, candlestick_file)
+            _save_any(p_candle, candlestick_file)
             println("Candlestick plot for $ticker saved to: $candlestick_file")
         end
     end
@@ -325,7 +342,7 @@ function analyze_stocks(tickers::Vector{String}, output_file::String;
         end
     end
     
-    savefig(plot_data, output_file)
+    _save_any(plot_data, output_file)
     println("Plot saved to: $output_file")
 end
 
